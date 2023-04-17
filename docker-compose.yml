@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  nginx:
+    image: openresty/openresty:latest
+    volumes:
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./lua:/lua
+      - ./html:/usr/local/openresty/nginx/html
+      - ./images:/images
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    networks:
+      - banner-net
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: banner_db
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+    networks:
+      - banner-net
+
+networks:
+  banner-net:
